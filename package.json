@@ -1,0 +1,31 @@
+{
+  "name": "cost",
+  "version": "0.1.0",
+  "description": "A CLI tool for checking the size of JS and CSS files, after minification and gzipping.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JoshuaWise/cost.git"
+  },
+  "keywords": [
+    "size",
+    "bytes",
+    "gzip",
+    "minify",
+    "js",
+    "css",
+    "test"
+  ],
+  "author": "Joshua Wise <josh@joshuawise.ninja> (www.joshuawise.ninja)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JoshuaWise/cost/issues"
+  },
+  "homepage": "https://github.com/JoshuaWise/cost",
+  "dependencies": {
+    "uglify-js": "^2.4.24"
+  }
+}
