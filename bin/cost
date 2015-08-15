@@ -6,7 +6,13 @@ var clc = require('cli-color');
 var prettyBytes = require('pretty-bytes');
 var cost = require('../lib/cost');
 
-var options = require('nopt')({'bytes': Boolean}, {'b': '--bytes'});
+var options = require('nopt')(
+{	'help': Boolean,
+	'bytes': Boolean
+}, {
+	'?': '--help',
+	'b': '--bytes'
+});
 var paths = options.argv.remain;
 
 function wrapCostResult(path) {
