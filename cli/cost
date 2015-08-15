@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 process.title = 'cost';
+var fs = require('fs');
+var path = require('path');
 var Promise = require('bluebird');
 var clc = require('cli-color');
 var prettyBytes = require('pretty-bytes');
@@ -15,6 +17,19 @@ var options = require('nopt')(
 });
 var paths = options.argv.remain;
 
+if (options.help || !paths.length) {
+	console.log('' + fs.readFileSync(path.join(__dirname, 'help.txt')));
+} else {
+	Promise.each(paths.map(wrapCostResult), function (result) {
+		if (paths.length > 1) {
+			var style = clc.underline[result.isError ? 'red' : 'green'];
+			console.log(style(result.path) + '\n' + result.value);
+		} else {
+			console.log(result.value);
+		}
+	});
+}
+
 function wrapCostResult(path) {
 	return cost(path)
 		.then(function (bytes) {
@@ -26,12 +41,3 @@ function wrapCostResult(path) {
 			return {path: path, value: value, isError: value.indexOf('ERROR') === 0};
 		});
 }
-
-Promise.each(paths.map(wrapCostResult), function (result) {
-	if (paths.length > 1) {
-		var style = clc.underline[result.isError ? 'red' : 'green'];
-		console.log(style(result.path) + '\n' + result.value);
-	} else {
-		console.log(result.value);
-	}
-});

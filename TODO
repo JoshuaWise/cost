@@ -1,0 +1,13 @@
+
+Implement mime-type checking, and create logic for gzipping and minification
+
+Don't ignore JS minifcation ignore errors
+
+Don't ignore CSS minifcation errors
+
+Display "(minify, gzip)" on the output for files that had those operations done to them
+
+Optional: Add CLI syntax for forcing minification and gzipping, or disabling them
+Add convenience CLI options for doing the same thing, but to all files.
+
+Make sure the CSS minifcation settings are optimal

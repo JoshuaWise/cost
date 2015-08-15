@@ -1,0 +1,13 @@
+Usage: cost <options> <paths>
+
+Available options:
+  --help, -?		Display this help information.
+  --bytes, -b		Always display size in bytes (not kB, MB, etc.)
+
+<paths> is one or more arguments which specify local or remote (http) paths.
+The size of these files will be displayed, after gzipping and/or minification
+(if applicable).
+
+Examples:
+cost --bytes /path/to/file.css
+cost https://example.com/jquery.js
