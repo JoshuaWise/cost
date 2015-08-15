@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+'use strict';
+process.title = 'cost';
+var Promise = require('bluebird');
+var clc = require('cli-color');
+var prettyBytes = require('pretty-bytes');
+var cost = require('../lib/cost');
+
+var options = require('nopt')({'bytes': Boolean}, {'b': '--bytes'});
+var paths = options.argv.remain;
+
+function wrapCostResult(path) {
+	return cost(path)
+		.then(function (bytes) {
+				return options.bytes ? bytes : prettyBytes(bytes);
+			}, function (err) {
+				return 'ERROR: ' + (err.statusCode ? err.statusCode + ' ' : '') + err.message;
+			})
+		.then(function (value) {
+			return {path: path, value: value, isError: value.indexOf('ERROR') === 0};
+		});
+}
+
+Promise.each(paths.map(wrapCostResult), function (result) {
+	if (paths.length > 1) {
+		var style = clc.underline[result.isError ? 'red' : 'green'];
+		console.log(style(result.path) + '\n' + result.value);
+	} else {
+		console.log(result.value);
+	}
+});

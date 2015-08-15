@@ -2,7 +2,7 @@
   "name": "cost",
   "version": "0.1.0",
   "description": "A CLI tool for checking the size of JS and CSS files, after minification and gzipping.",
-  "main": "index.js",
+  "main": "lib/cost.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -26,6 +26,12 @@
   },
   "homepage": "https://github.com/JoshuaWise/cost",
   "dependencies": {
+    "bluebird": "^2.9.34",
+    "cli-color": "^1.0.0",
+    "errno": "^0.1.3",
+    "nopt": "^3.0.3",
+    "pretty-bytes": "^2.0.1",
+    "simple-get": "^1.4.2",
     "uglify-js": "^2.4.24"
   }
 }
