@@ -1,9 +1,9 @@
 # cost
-A CLI tool for checking the size of files after minifying and gzipping them. Mime-types are checked to determine whether to minify and/or gzip the file. To mimic the behavior of most servers, only CSS and JS files are minified, and binary files such as images are not gzipped.
+A CLI tool for checking the size of files after minifying and gzipping them. Mime-types are checked to determine whether to minify and/or gzip the file. To mimic the behavior of most web servers, only CSS and JS files are minified, and binary files such as images are not gzipped.
 
 ## Installation
 ```
-$ sudo npm install -g cost
+$ npm install -g cost
 ```
 
 ## Usage
