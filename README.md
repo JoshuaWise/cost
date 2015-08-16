@@ -74,5 +74,35 @@ This logic can be overwritten manually (see [Options](#options)).
 
 [uglify-js](https://github.com/mishoo/UglifyJS2) is used for JavaScript minifcation, and [clean-css](https://github.com/jakubpawlowicz/clean-css) is used for CSS minification.
 
+## Programmatic Usage
+The main module uses promises ([A+](https://promisesaplus.com/)).
+```javascript
+var cost = require('cost');
+
+cost('/path/to/file.js')
+	.then(function (result) {
+		console.log(result.value + ' bytes');
+		// >> 62 bytes
+		
+		if (result.minify) {
+			console.log('file was %s minified', result.minify);
+			// >> file was js minified
+		}
+		
+		if (result.gzip) {
+			console.log('file was gzipped')
+		}
+	})
+	.catch(function (err) {
+		console.log(err.message);
+	});
+	
+cost({
+	path: '/path/to/file.js',
+	minify: false, // could be 'js', 'css', or false
+	gzip: true
+}).then(handleResult).catch(handleErrors);
+```
+
 ## License
 MIT License (https://github.com/JoshuaWise/cost/blob/master/LICENSE)
