@@ -74,6 +74,8 @@ This logic can be overwritten manually (see [Options](#options)).
 
 [uglify-js](https://github.com/mishoo/UglifyJS2) is used for JavaScript minifcation, and [clean-css](https://github.com/jakubpawlowicz/clean-css) is used for CSS minification.
 
+The CSS minifiction does **NOT** follow @import directives.
+
 ## Programmatic Usage
 The main module uses promises ([A+](https://promisesaplus.com/)).
 ```javascript
