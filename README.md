@@ -61,7 +61,7 @@ $ cost :max,unzip:/path/to/file.js
 ```
 
 These per-file options supercede the standard options.
-For example, the following operation **would** do minification, but **not** gzipping:
+For example, the following operation **will** do minification, but **not** gzipping:
 ```
 $ cost --raw :js:/path/to/file
 ```
@@ -84,13 +84,13 @@ cost('/path/to/file.js')
 		console.log(result.value + ' bytes');
 		// >> 62 bytes
 		
+		if (result.gzip) {
+			console.log('file was gzipped')
+		}
+		
 		if (result.minify) {
 			console.log('file was %s minified', result.minify);
 			// >> file was js minified
-		}
-		
-		if (result.gzip) {
-			console.log('file was gzipped')
 		}
 	})
 	.catch(function (err) {
