@@ -2,3 +2,5 @@ Optional: Add CLI syntax for forcing minification and gzipping, or disabling the
 Add convenience CLI options for doing the same thing, but to all files.
 
 Make sure the CSS minifcation settings are optimal
+
+Do tests

@@ -38,8 +38,8 @@ function prepareCostResult(path) {
 				if (!options.bytes) {data.value = prettyBytes(data.value);}
 				if (!options.simple) {
 					var details = [];
-					if (data.minify) {details.push('minify');}
-					if (data.gzip) {details.push('gzip');}
+					if (data.minify) {details.push('minified');}
+					if (data.gzip) {details.push('gzipped');}
 					if (details.length) {
 						data.value += ' (' + details.join(', ') + ')';
 					}
