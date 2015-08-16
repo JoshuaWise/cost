@@ -2,40 +2,30 @@
 'use strict';
 process.title = 'cost';
 var fs = require('fs');
-var path = require('path');
 var Promise = require('bluebird');
 var clc = require('cli-color');
 var prettyBytes = require('pretty-bytes');
+var pathJoin = require('path').join;
 var cost = require('../lib/cost');
 
-var options = require('nopt')(
-{	'help': Boolean,
+var options = require('nopt')({
+	'help': Boolean,
 	'bytes': Boolean,
 	'simple': Boolean,
-	'js': Boolean,
-	'css': Boolean,
-	'max': Boolean,
-	'gzip': Boolean,
-	'unzip': Boolean,
 	'raw': Boolean
 }, {
 	'?': '--help',
 	'b': '--bytes',
 	's': '--simple',
-	'j': '--js',
-	'c': '--css',
-	'm': '--max',
-	'g': '--gzip',
-	'u': '--unzip',
 	'r': '--raw'
 });
-var paths = options.argv.remain;
+var args = options.argv.remain;
 
-if (options.help || !paths.length) {
-	console.log('' + fs.readFileSync(path.join(__dirname, 'help.txt')));
+if (options.help || !args.length) {
+	console.log('' + fs.readFileSync(pathJoin(__dirname, 'help.txt')));
 } else {
-	Promise.each(paths.map(prepareCostResult), function (data) {
-		if (paths.length > 1) {
+	Promise.each(args.map(prepareCostResult), function (data) {
+		if (args.length > 1) {
 			var style = clc.underline[data.isError ? 'red' : 'green'];
 			console.log(style(data.path) + '\n' + data.value);
 		} else {
@@ -44,10 +34,36 @@ if (options.help || !paths.length) {
 	});
 }
 
-function prepareCostResult(path) {
-	return cost(path)
+function prepareCostResult(arg) {
+	var match = /^(:([^:]*):)?([\s\S]*)/.exec(arg);
+	var path = match[3];
+	var opts = {path: path};
+	
+	if (options.raw) {
+		opts.minify = false;
+		opts.gzip = false;
+	}
+	if (match[2]) {
+		match[2]
+			.split(',')
+			.map(function (str) {return str.trim().toLowerCase();})
+			.forEach(function (option) {
+				switch (option) {
+					case 'js': opts.minify = 'js'; break;
+					case 'css': opts.minify = 'css'; break;
+					case 'max': opts.minify = false; break;
+					case 'gzip': opts.gzip = true; break;
+					case 'unzip': opts.gzip = false; break;
+					default: console.warn(clc.yellow('WARNING: unrecognized modifier: "%s"'), option);
+				}
+			});
+	}
+	
+	return cost(opts)
 		.then(function (data) {
-				if (!options.bytes) {data.value = prettyBytes(data.value);}
+				if (!options.bytes) {
+					data.value = prettyBytes(data.value);
+				}
 				if (!options.simple) {
 					var details = [];
 					if (data.minify) {details.push('minified');}

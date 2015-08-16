@@ -33,11 +33,6 @@ $ cost https://mydomain.com/myfile.txt
 --help, -?        Display help information
 --bytes, -b       Always display size in bytes (not kB, MB, etc.)
 --simple, -s      Hide details about whether files were gzipped or minified
---js, -j          Minify all files as JavaScript files
---css, -c         Minify all files as CSS files
---max, -m         Don't minify any files
---gzip, -g        Gzip all files
---unzip, -u       Don't gzip any files
 --raw, -r         Don't minify or gzip any files
 ```
 
@@ -49,7 +44,7 @@ $ cost :css:/path/to/file
 $ cost :gzip:/path/to/file
 >> xxx kB (gzipped)
 
-$ cost :js:gzip:/path/to/file
+$ cost :js,gzip:/path/to/file
 >> xxx kB (minified, gzipped)
 ```
 
@@ -61,7 +56,7 @@ $ cost :max:/path/to/file.js
 $ cost :unzip:/path/to/file.js
 >> xxx kB (minified)
 
-$ cost :raw:/path/to/file.js
+$ cost :max,unzip:/path/to/file.js
 >> xxx kB
 ```
 

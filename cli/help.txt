@@ -4,11 +4,6 @@ Available options:
   --help, -?        Display this help information
   --bytes, -b       Always display size in bytes (not kB, MB, etc.)
   --simple, -s      Hide details about whether files were gzipped or minified
-  --js, -j          Minify all files as JavaScript files
-  --css, -c         Minify all files as CSS files
-  --max, -m         Don't minify any files
-  --gzip, -g        Gzip all files
-  --unzip, -u       Don't gzip any files
   --raw, -r         Don't minify or gzip any files
 
 <paths> is one or more arguments which specify local or remote (http) paths.
