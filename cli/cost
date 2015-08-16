@@ -11,11 +11,23 @@ var cost = require('../lib/cost');
 var options = require('nopt')(
 {	'help': Boolean,
 	'bytes': Boolean,
-	'simple': Boolean
+	'simple': Boolean,
+	'js': Boolean,
+	'css': Boolean,
+	'max': Boolean,
+	'gzip': Boolean,
+	'unzip': Boolean,
+	'raw': Boolean
 }, {
 	'?': '--help',
 	'b': '--bytes',
-	's': '--simple'
+	's': '--simple',
+	'j': '--js',
+	'c': '--css',
+	'm': '--max',
+	'g': '--gzip',
+	'u': '--unzip',
+	'r': '--raw'
 });
 var paths = options.argv.remain;
 

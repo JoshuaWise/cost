@@ -9,36 +9,73 @@ $ sudo npm install -g cost
 ## Usage
 Basic usage:
 ```
-$ cost /path/to/file.js
+$ cost /path/to/file.jpg
 >> 640 kB
 ```
 
 Multiple files:
 ```
-$ cost /path/to/file.js ../path/to/other/file.txt
+$ cost /path/to/file.js ../path/to/other/file.png
 >> /path/to/file.js
 >> 640 kB (minified, gzipped)
->> ../path/to/other/file.txt
->> 2.3 MB (gzipped)
+>> ../path/to/other/file.png
+>> 2.3 MB
 ```
 
 Remote files:
 ```
-$ cost https://mydomain.com/myfile.png
->> 21 kB
+$ cost https://mydomain.com/myfile.txt
+>> 21 kB (gzipped)
 ```
 
 ## Options
 ```
---help, -?		- Display help information
---bytes, -b		- Always display in bytes (not kB, MB, etc.)
---simple, -s 	- Hide details about whether files were gzipped or minified
+--help, -?        Display help information
+--bytes, -b       Always display size in bytes (not kB, MB, etc.)
+--simple, -s      Hide details about whether files were gzipped or minified
+--js, -j          Minify all files as JavaScript files
+--css, -c         Minify all files as CSS files
+--max, -m         Don't minify any files
+--gzip, -g        Gzip all files
+--unzip, -u       Don't gzip any files
+--raw, -r         Don't minify or gzip any files
 ```
 
-## Minifcation and Gzipping
+Forcefully cause gzip/minify:
+```
+$ cost :css:/path/to/file
+>> xxx kB (minified)
+
+$ cost :gzip:/path/to/file
+>> xxx kB (gzipped)
+
+$ cost :js:gzip:/path/to/file
+>> xxx kB (minified, gzipped)
+```
+
+Forcefully **skip** gzipping/minification:
+```
+$ cost :max:/path/to/file.js
+>> xxx kB (gzipped)
+
+$ cost :unzip:/path/to/file.js
+>> xxx kB (minified)
+
+$ cost :raw:/path/to/file.js
+>> xxx kB
+```
+
+These per-file options supercede the standard options.
+For example, the following operation **would** do minification, but **not** gzipping:
+```
+$ cost --raw :js:/path/to/file
+```
+
+
+## Useful Information
 When used on a local file, the file extension is used to determine the MIME type, which is used to decide whether to minify and/or gzip the file. When used on a remote file, the `Content-Type` header is checked to determine the MIME type, and the URL's file extension is used as a fallback.
 
-This logic can be overwritten manually (see [Options](#options))
+This logic can be overwritten manually (see [Options](#options)).
 
 [uglify-js](https://github.com/mishoo/UglifyJS2) is used for JavaScript minifcation, and [clean-css](https://github.com/jakubpawlowicz/clean-css) is used for CSS minification.
 
