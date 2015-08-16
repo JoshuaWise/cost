@@ -32,6 +32,7 @@ $ cost https://mydomain.com/myfile.js
 ```
 --help, -?		- Display help information
 --bytes, -b		- Always display in bytes (not kB, MB, etc.)
+--simple, -s 	- Hide details about whether files were gzipped or minified
 ```
 
 ## License

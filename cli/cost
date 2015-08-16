@@ -10,34 +10,46 @@ var cost = require('../lib/cost');
 
 var options = require('nopt')(
 {	'help': Boolean,
-	'bytes': Boolean
+	'bytes': Boolean,
+	'simple': Boolean
 }, {
 	'?': '--help',
-	'b': '--bytes'
+	'b': '--bytes',
+	's': '--simple'
 });
 var paths = options.argv.remain;
 
 if (options.help || !paths.length) {
 	console.log('' + fs.readFileSync(path.join(__dirname, 'help.txt')));
 } else {
-	Promise.each(paths.map(wrapCostResult), function (result) {
+	Promise.each(paths.map(prepareCostResult), function (data) {
 		if (paths.length > 1) {
-			var style = clc.underline[result.isError ? 'red' : 'green'];
-			console.log(style(result.path) + '\n' + result.value);
+			var style = clc.underline[data.isError ? 'red' : 'green'];
+			console.log(style(data.path) + '\n' + data.value);
 		} else {
-			console.log(result.value);
+			console.log(data.value);
 		}
 	});
 }
 
-function wrapCostResult(path) {
+function prepareCostResult(path) {
 	return cost(path)
-		.then(function (bytes) {
-				return options.bytes ? bytes : prettyBytes(bytes);
+		.then(function (data) {
+				if (!options.bytes) {data.value = prettyBytes(data.value);}
+				if (!options.simple) {
+					var details = [];
+					if (data.minify) {details.push('minify');}
+					if (data.gzip) {details.push('gzip');}
+					if (details.length) {
+						data.value += ' (' + details.join(', ') + ')';
+					}
+				}
+				return data;
 			}, function (err) {
-				return 'ERROR: ' + (err.statusCode ? err.statusCode + ' ' : '') + err.message;
-			})
-		.then(function (value) {
-			return {path: path, value: value, isError: value.indexOf('ERROR') === 0};
-		});
+				return {
+					path: path,
+					value: 'ERROR: ' + (err.statusCode ? err.statusCode + ' ' : '') + err.message,
+					isError: true
+				};
+			});
 }

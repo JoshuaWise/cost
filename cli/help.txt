@@ -3,6 +3,7 @@ Usage: cost <options> <paths>
 Available options:
   --help, -?		Display this help information.
   --bytes, -b		Always display size in bytes (not kB, MB, etc.)
+  --simple, -s		Hide details about whether files were gzipped/minified
 
 <paths> is one or more arguments which specify local or remote (http) paths.
 The size of these files will be displayed, after gzipping and/or minification
