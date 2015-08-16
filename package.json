@@ -1,6 +1,6 @@
 {
   "name": "cost",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A CLI tool for checking the size of JS and CSS files, after minification and gzipping.",
   "main": "lib/cost.js",
   "bin": "cli/cost",
