@@ -31,7 +31,7 @@
     "clean-css": "^3.3.9",
     "cli-color": "^1.0.0",
     "compressible": "^2.0.5",
-    "errno": "git://github.com/JoshuaWise/node-errno",
+    "errno": "^0.1.4",
     "file-mime": "0.0.13",
     "nopt": "^3.0.3",
     "pretty-bytes": "^2.0.1",
