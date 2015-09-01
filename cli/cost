@@ -21,7 +21,7 @@ var options = require('nopt')({
 	'r': '--raw'
 });
 var args = options.argv.remain;
-var pathArgsExist = args.length > 1 || !!(args[0] || '').replace(modifierRE, '$3');
+var pathArgsExist = !!args.some(stripModifier);
 var usedFiles = false;
 
 if (options.help) {
@@ -33,17 +33,18 @@ if (options.help) {
 function interpretStdin() {
 	process.stdin.once('readable', function () {		
 		var chunk = process.stdin.read();
-		if (chunk == null) {
-			if (pathArgsExist) {
-				Promise.each(args.map(resultsFromArg), displayResults);
-				process.stdin.pause();
-			} else {
-				console.log('(when done with input, press enter, then ^D)');
-				resultsFromStdin().then(displayResults);
-			}
+		if (chunk == null && pathArgsExist) {
+			Promise.each(args.map(resultsFromArg), displayResults);
+			process.stdin.pause();
 		} else {
 			if (pathArgsExist) {
 				console.warn(clc.yellow('WARNING: path arguments are ignored when piping to stdin.'));
+			}
+			if (args.length > 1 && !args.every(stripModifier)) {
+				console.warn(clc.yellow('WARNING: when using stdin, modifiers after the first argument are ignored.'));
+			}
+			if (chunk == null) {
+				console.log('(when done with input, press enter, then ^D)');
 			}
 			resultsFromStdin(chunk).then(displayResults);
 		}
@@ -127,4 +128,8 @@ function displayResults(data) {
 	} else {
 		console.log(data.value);
 	}
+}
+
+function stripModifier(arg) {
+	return arg.replace(modifierRE, '$3');
 }
