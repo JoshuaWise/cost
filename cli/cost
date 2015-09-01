@@ -7,6 +7,7 @@ var clc = require('cli-color');
 var prettyBytes = require('pretty-bytes');
 var pathJoin = require('path').join;
 var cost = require('../lib/cost');
+var modifierRE = /^(:([^:]*):)?([\s\S]*)/
 
 var options = require('nopt')({
 	'help': Boolean,
@@ -20,31 +21,68 @@ var options = require('nopt')({
 	'r': '--raw'
 });
 var args = options.argv.remain;
+var pathArgsExist = args.length > 1 || !!(args[0] || '').replace(modifierRE, '$3');
+var usedFiles = false;
 
-if (options.help || !args.length) {
+if (options.help) {
 	console.log('' + fs.readFileSync(pathJoin(__dirname, 'help.txt')));
 } else {
-	Promise.each(args.map(prepareCostResult), function (data) {
-		if (args.length > 1) {
-			var style = clc.underline[data.isError ? 'red' : 'green'];
-			console.log(style(data.path) + '\n' + data.value);
+	interpretStdin();
+}
+
+function interpretStdin() {
+	process.stdin.once('readable', function () {		
+		var chunk = process.stdin.read();
+		if (chunk == null) {
+			if (pathArgsExist) {
+				Promise.each(args.map(resultsFromArg), displayResults);
+				process.stdin.pause();
+			} else {
+				console.log('(when done with input, press enter, then ^D)');
+				resultsFromStdin().then(displayResults);
+			}
 		} else {
-			console.log(data.value);
+			if (pathArgsExist) {
+				console.warn(clc.yellow('WARNING: path arguments are ignored when piping to stdin.'));
+			}
+			resultsFromStdin(chunk).then(displayResults);
 		}
 	});
 }
 
-function prepareCostResult(arg) {
-	var match = /^(:([^:]*):)?([\s\S]*)/.exec(arg);
-	var path = match[3];
-	var opts = {path: path};
-	
+function resultsFromArg(arg) {
+	usedFiles = true;
+	var match = modifierRE.exec(arg);
+	var opts = {path: match[3]};
+	return prepareCostResult(opts, match[2]);
+}
+
+function resultsFromStdin(firstChunk) {
+	return new Promise(function (resolve, reject) {
+		var stdinChunks = [];
+		
+		if (firstChunk != null) stdinChunks.push(firstChunk);
+		
+		process.stdin.on('readable', function () {
+			var chunk = process.stdin.read();
+			chunk != null && stdinChunks.push(chunk);
+		});
+		
+		process.stdin.on('end', function () {
+			var match = modifierRE.exec(args[0] || '');
+			var opts = {value: '' + Buffer.concat(stdinChunks)};
+			prepareCostResult(opts, match[3] ? null : match[2]).then(resolve);
+		});
+	});
+}
+
+function prepareCostResult(opts, modifiers) {
 	if (options.raw) {
 		opts.minify = false;
 		opts.gzip = false;
 	}
-	if (match[2]) {
-		match[2]
+	if (modifiers) {
+		modifiers
 			.split(',')
 			.map(function (str) {return str.trim().toLowerCase();})
 			.forEach(function (option) {
@@ -75,9 +113,18 @@ function prepareCostResult(arg) {
 				return data;
 			}, function (err) {
 				return {
-					path: path,
+					path: opts.path,
 					value: 'ERROR: ' + (err.statusCode ? err.statusCode + ' ' : '') + err.message,
 					isError: true
 				};
 			});
+}
+
+function displayResults(data) {
+	if (usedFiles && args.length > 1) {
+		var style = clc.underline[data.isError ? 'red' : 'green'];
+		console.log(style(data.path || '""') + '\n' + data.value);
+	} else {
+		console.log(data.value);
+	}
 }

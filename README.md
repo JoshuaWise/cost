@@ -28,6 +28,12 @@ $ cost https://mydomain.com/myfile.txt
 >> 21 kB (gzipped)
 ```
 
+Standard input:
+```
+$ echo hello world | cost
+>> 12 B
+```
+
 ## Options
 ```
 --help, -?        Display help information
@@ -58,6 +64,12 @@ $ cost :unzip:/path/to/file.js
 
 $ cost :max,unzip:/path/to/file.js
 >> xxx kB
+```
+
+You can do this with stdin too:
+```
+$ echo hello world | cost :js:
+>> ERROR: Unexpected token: name (world)
 ```
 
 These per-file options supercede the standard options.
@@ -99,9 +111,20 @@ cost('/path/to/file.js')
 		console.log(err.message);
 	});
 	
+	
 cost({
 	path: '/path/to/file.js',
 	minify: false, // could be 'js', 'css', or false
+	gzip: true
+}).then(handleResult).catch(handleErrors);
+
+
+// You can pass a string instead of a path.
+// But when you do, minification and gzipping will not happen unless
+// specified by you, because automatic MIME type detection cannot occur.
+cost({
+	value: myCssString,
+	minify: 'css',
 	gzip: true
 }).then(handleResult).catch(handleErrors);
 ```
