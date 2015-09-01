@@ -13,3 +13,4 @@ The size of these files will be displayed, after gzipping and/or minification
 Examples:
 cost --bytes /path/to/file.css
 cost https://example.com/jquery.js
+echo hello world | cost
