@@ -1,4 +1,4 @@
-Usage: cost <options> <paths>
+Usage: cost [options] [path ...]
 
 Available options:
   --help, -?        Display this help information
@@ -6,9 +6,9 @@ Available options:
   --simple, -s      Hide details about whether files were gzipped or minified
   --raw, -r         Don't minify or gzip any files
 
-<paths> is one or more arguments which specify local or remote (http) paths.
+[path] is zero or more arguments which specify local or remote (http) paths.
 The size of these files will be displayed, after gzipping and/or minification
-(if applicable).
+(if applicable). If zero paths are specified, the stdin is used instead.
 
 Examples:
 cost --bytes /path/to/file.css
